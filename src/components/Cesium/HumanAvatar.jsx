@@ -1,21 +1,22 @@
 'use client'
 import {
   Cartesian3,
-  Clock,
+  Ion,
+  Viewer,
+  Transforms,
+  HeadingPitchRoll,
+  JulianDate,
   ClockRange,
+  Clock,
   ClockStep,
   ClockViewModel,
-  Ion,
-  JulianDate,
   Terrain,
-  Viewer,
-  createOsmBuildingsAsync,
 } from 'cesium'
 import 'cesium/Build/Cesium/Widgets/widgets.css'
 import { useEffect } from 'react'
 import './css/main.css'
 
-export default function Aircraft() {
+export default function HumanAvatar() {
   useEffect(() => {
     const initializeCesiumViewer = async () => {
       // CesiumJS has a default access token built in but it's not meant for active use.
@@ -38,12 +39,13 @@ export default function Aircraft() {
 
       // Initialize the Cesium Viewer in the HTML element with the `cesiumContainer` ID.
       const viewer = new Viewer('cesiumContainer', {
-        // // show terrain
-        terrain: Terrain.fromWorldTerrain({
-          // for day-night effect
-          requestWaterMask: true, // required for water effects
-          requestVertexNormals: true, // required for terrain lighting
-        }),
+        // // show terrain // currently disabled don't know the altitude for the ground to put the human avatar
+        // terrain: Terrain.fromWorldTerrain({
+        //   // for day-night effect
+        //   requestWaterMask: true, // required for water effects
+        //   requestVertexNormals: true, // required for terrain lighting
+        // }),
+
         clockViewModel: new ClockViewModel(clock), // Shows the clock
         infoBox: false,
         selectionIndicator: false,
@@ -61,29 +63,38 @@ export default function Aircraft() {
       viewer.scene.globe.depthTestAgainstTerrain = true
 
       viewer.entities.removeAll()
-      const scene = viewer.scene
 
-      if (!scene.sampleHeightSupported) {
-        window.alert('This browser does not support sampleHeight.')
-      }
+      const position = Cartesian3.fromDegrees(85.28472, 27.688835, 0)
+      const heading = (210 * Math.PI) / 180
+      const pitch = 0
+      const roll = 0
+      const hpr = new HeadingPitchRoll(heading, pitch, roll)
+      const orientation = Transforms.headingPitchRollQuaternion(position, hpr)
 
-      // // Add Cesium OSM Buildings, a global 3D buildings layer.
-      // const osmBuildingsTileset = await createOsmBuildingsAsync()
-      // viewer.scene.primitives.add(osmBuildingsTileset)
+      const url = 'https://models.readyplayer.me/66038d9e2aa392635c277ea9.glb' // avatar model
 
-      const height = 8000
-
-      const position = Cartesian3.fromDegrees(85.28472, 27.688835, height)
-
-      const url = 'aeroplane.glb'
-
-      const entity = (viewer.trackedEntity = viewer.entities.add({
+      const entity = viewer.entities.add({
         name: url,
         position: position,
+        orientation: orientation,
         model: {
           uri: url,
         },
-      }))
+      })
+      viewer.trackedEntity = entity
+
+      // // // Add Cesium OSM Buildings, a global 3D buildings layer.
+      // const osmBuildingsTileset = await createOsmBuildingsAsync()
+      // viewer.scene.primitives.add(osmBuildingsTileset)
+
+      // Fly the camera to Portland at the given longitude, latitude, and height.
+      // viewer.camera.flyTo({
+      //   destination: Cartesian3.fromDegrees(-122.6515, 45.5252, 525),
+      //   orientation: {
+      //     heading: Math.toRadians(0.0),
+      //     pitch: Math.toRadians(-15.0),
+      //   },
+      // })
     }
 
     initializeCesiumViewer()

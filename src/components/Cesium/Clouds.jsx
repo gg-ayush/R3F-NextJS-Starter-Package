@@ -193,12 +193,8 @@ export default function Clouds() {
   }, []) // Empty dependency array to run the effect only once
   return (
     <>
-      <div className='absolute size-96 bg-black'>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto sapiente laboriosam quod veniam praesentium,
-          natus voluptas eos, quis explicabo culpa iure dolor earum asperiores nostrum unde suscipit autem excepturi
-          inventore?
-        </p>
+      <div className='absolute size-96'>
+        <p>Loading ...</p>
       </div>
       <div id='cesiumContainer' className='h-screen w-full'>
         {/* Cesium Viewer container */}
