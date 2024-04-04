@@ -1,21 +1,25 @@
 'use client'
 import {
+  Cartesian2,
   Cartesian3,
   Clock,
   ClockRange,
   ClockStep,
   ClockViewModel,
+  CloudCollection,
   Ion,
   JulianDate,
+  Math,
   Terrain,
   Viewer,
   createOsmBuildingsAsync,
+  GpxDataSource,
 } from 'cesium'
 import 'cesium/Build/Cesium/Widgets/widgets.css'
 import { useEffect } from 'react'
 import './css/main.css'
 
-export default function Aircraft() {
+export default function GPX() {
   useEffect(() => {
     const initializeCesiumViewer = async () => {
       // CesiumJS has a default access token built in but it's not meant for active use.
@@ -27,12 +31,11 @@ export default function Aircraft() {
 
       const clock = new Clock({
         // adjust time so scene is lit by sun
-        startTime: JulianDate.fromIso8601('2013-12-25'),
-        currentTime: JulianDate.fromIso8601('2013-12-25'),
-        stopTime: JulianDate.fromIso8601('2013-12-26'),
-        clockRange: ClockRange.LOOP_STOP, // loop when we hit the end time
-        clockStep: ClockStep.SYSTEM_CLOCK_MULTIPLIER,
-        multiplier: 10, // how much time to advance each tick
+        // startTime: JulianDate.fromIso8601('2013-12-25'),
+        // currentTime: JulianDate.fromIso8601('2013-12-25'),
+        // stopTime: JulianDate.fromIso8601('2013-12-26'),
+        clockRange: ClockRange.UNBOUNDED,
+        clockStep: ClockStep.SYSTEM_CLOCK,
         shouldAnimate: true, // Animation on by default
       })
 
@@ -40,51 +43,41 @@ export default function Aircraft() {
       const viewer = new Viewer('cesiumContainer', {
         // // show terrain
         terrain: Terrain.fromWorldTerrain({
-          // for day-night effect
+          //   // for day-night effect
           requestWaterMask: true, // required for water effects
           requestVertexNormals: true, // required for terrain lighting
         }),
-        clockViewModel: new ClockViewModel(clock), // Shows the clock
-        infoBox: false,
-        selectionIndicator: false,
-        shadows: true,
-        shouldAnimate: true,
+        // clockViewModel: new ClockViewModel(clock), // Shows the clock
+        // infoBox: false,
+        // shouldAnimate: true,
       })
 
       // Enable rendering the sky
       viewer.scene.skyAtmosphere.show = true
 
-      // set lighting to true
+      // // set lighting to true
       viewer.scene.globe.enableLighting = true
 
-      // for blue sky effect
+      // // for blue sky effect
       viewer.scene.globe.depthTestAgainstTerrain = true
-
-      viewer.entities.removeAll()
-      const scene = viewer.scene
-
-      if (!scene.sampleHeightSupported) {
-        window.alert('This browser does not support sampleHeight.')
-      }
 
       // // Add Cesium OSM Buildings, a global 3D buildings layer.
       // const osmBuildingsTileset = await createOsmBuildingsAsync()
       // viewer.scene.primitives.add(osmBuildingsTileset)
 
-      const height = 5000
+      viewer.dataSources.add(
+        GpxDataSource.load('Afternoon_Mar_30th_.gpx', {
+          clampToGround: true,
+        }),
+      )
 
-      const position = Cartesian3.fromDegrees(85.28472, 27.688835, height)
-
-      // const url = 'aeroplane.glb'
-      const url = 'Cesium_Air.glb'
-
-      const entity = (viewer.trackedEntity = viewer.entities.add({
-        name: url,
-        position: position,
-        model: {
-          uri: url,
+      viewer.camera.flyTo({
+        destination: Cartesian3.fromDegrees(85.240347, 27.683235, 1414),
+        orientation: {
+          heading: Math.toRadians(0.0),
+          pitch: Math.toRadians(-35.0),
         },
-      }))
+      })
     }
 
     initializeCesiumViewer()
