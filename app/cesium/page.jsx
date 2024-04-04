@@ -8,8 +8,8 @@ export default function Cesium() {
     <>
       {/* <Clouds /> */}
       {/* <Aircraft /> */}
-      {/* <HumanAvatar /> */}
-      <Vehicle />
+      <HumanAvatar />
+      {/* <Vehicle /> */}
     </>
   )
 }

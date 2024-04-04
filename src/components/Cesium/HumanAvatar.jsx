@@ -11,6 +11,7 @@ import {
   ClockStep,
   ClockViewModel,
   Terrain,
+  createOsmBuildingsAsync,
 } from 'cesium'
 import 'cesium/Build/Cesium/Widgets/widgets.css'
 import { useEffect } from 'react'
@@ -39,12 +40,12 @@ export default function HumanAvatar() {
 
       // Initialize the Cesium Viewer in the HTML element with the `cesiumContainer` ID.
       const viewer = new Viewer('cesiumContainer', {
-        // // show terrain // currently disabled don't know the altitude for the ground to put the human avatar
-        // terrain: Terrain.fromWorldTerrain({
-        //   // for day-night effect
-        //   requestWaterMask: true, // required for water effects
-        //   requestVertexNormals: true, // required for terrain lighting
-        // }),
+        // show terrain // currently disabled don't know the altitude for the ground to put the human avatar
+        terrain: Terrain.fromWorldTerrain({
+          // for day-night effect
+          requestWaterMask: true, // required for water effects
+          requestVertexNormals: true, // required for terrain lighting
+        }),
 
         clockViewModel: new ClockViewModel(clock), // Shows the clock
         infoBox: false,
@@ -64,19 +65,20 @@ export default function HumanAvatar() {
 
       viewer.entities.removeAll()
 
-      const position = Cartesian3.fromDegrees(85.28472, 27.688835, 0)
-      const heading = (210 * Math.PI) / 180
-      const pitch = 0
-      const roll = 0
-      const hpr = new HeadingPitchRoll(heading, pitch, roll)
-      const orientation = Transforms.headingPitchRollQuaternion(position, hpr)
+      const position = Cartesian3.fromDegrees(85.28472, 27.688835, 1255.5)
+      // const heading = (210 * Math.PI) / 180
+      // const pitch = 0
+      // const roll = 0
+      // const hpr = new HeadingPitchRoll(heading, pitch, roll)
+      // const orientation = Transforms.headingPitchRollQuaternion(position, hpr)
 
       const url = 'https://models.readyplayer.me/66038d9e2aa392635c277ea9.glb' // avatar model
+      // const url = 'female-animation-catwalk.glb' // avatar model
 
       const entity = viewer.entities.add({
         name: url,
         position: position,
-        orientation: orientation,
+        // orientation: orientation,
         model: {
           uri: url,
         },
@@ -84,8 +86,8 @@ export default function HumanAvatar() {
       viewer.trackedEntity = entity
 
       // // // Add Cesium OSM Buildings, a global 3D buildings layer.
-      // const osmBuildingsTileset = await createOsmBuildingsAsync()
-      // viewer.scene.primitives.add(osmBuildingsTileset)
+      const osmBuildingsTileset = await createOsmBuildingsAsync()
+      viewer.scene.primitives.add(osmBuildingsTileset)
 
       // Fly the camera to Portland at the given longitude, latitude, and height.
       // viewer.camera.flyTo({
