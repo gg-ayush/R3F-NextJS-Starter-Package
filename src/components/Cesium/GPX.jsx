@@ -14,6 +14,8 @@ import {
   Viewer,
   createOsmBuildingsAsync,
   GpxDataSource,
+  PinBuilder,
+  Color,
 } from 'cesium'
 import 'cesium/Build/Cesium/Widgets/widgets.css'
 import { useEffect } from 'react'
@@ -65,9 +67,19 @@ export default function GPX() {
       // const osmBuildingsTileset = await createOsmBuildingsAsync()
       // viewer.scene.primitives.add(osmBuildingsTileset)
 
+      const pinBuilder = new PinBuilder()
+
       viewer.dataSources.add(
         GpxDataSource.load('Afternoon_Mar_30th_.gpx', {
           clampToGround: true,
+          trackColor: Color.GREENYELLOW,
+
+          // Custom waypoint image
+          waypointImage: pinBuilder.fromUrl(
+            'https://imgs.search.brave.com/gQWYzwf_Qnt-Xf0GFD7hKey-F6mXq4jTdtBPhd5u8ew/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9mcmVl/cG5naW1nLmNvbS9z/dGF0aWMvaW1nL3lv/dXR1YmUucG5n',
+            Color.TRANSPARENT,
+            60,
+          ),
         }),
       )
 
