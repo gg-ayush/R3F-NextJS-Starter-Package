@@ -22,7 +22,7 @@ import 'cesium/Build/Cesium/Widgets/widgets.css'
 import { useEffect } from 'react'
 import './css/main.css'
 
-export default function GPX() {
+export default function GPX2() {
   let gpxEntity
   let pinEntity
 
@@ -73,20 +73,31 @@ export default function GPX() {
 
       const pinBuilder = new PinBuilder()
 
-      // Load the GPX data source
+      // // Load the GPX data source
       const gpxDataSource = await GpxDataSource.load('Afternoon_Mar_30th_.gpx', {
         clampToGround: true,
         trackColor: Color.GREENYELLOW,
-        waypointImage: pinBuilder.fromUrl('/icons/icons8-location-96.png', Color.YELLOW, 96),
+        // waypointImage: pinBuilder.fromUrl('/icons/icons8-location-96.png', Color.YELLOW, 96),
+        waypointImage: pinBuilder.fromUrl('/icons/icons8-location-96.png', Color.RED, 96),
+      })
+
+      const gpxDataSource2 = await GpxDataSource.load('Morning_Mar_30th_.gpx', {
+        clampToGround: true,
+        trackColor: Color.CYAN,
+        // waypointImage: pinBuilder.fromUrl('/icons/icons8-location-96.png', Color.RED, 96),
+        waypointImage: pinBuilder.fromUrl('/icons/icons8-location-96.png', Color.RED, 96),
       })
 
       // Add the GPX data source to the viewer
       viewer.dataSources.add(gpxDataSource)
+      viewer.dataSources.add(gpxDataSource2)
 
-      // Get the first entity from the data source
+      // // Get the first entity from the data source
       gpxEntity = gpxDataSource.entities.values[0]
+      gpxEntity = gpxDataSource2.entities.values[0]
 
       // Create an entity for the pinBuilder
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       pinEntity = viewer.entities.add({
         position: gpxEntity.position,
         billboard: {
