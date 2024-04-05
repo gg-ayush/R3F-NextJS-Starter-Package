@@ -11,6 +11,8 @@ import {
   ClockStep,
   ClockViewModel,
   Terrain,
+  createOsmBuildingsAsync,
+  Math,
 } from 'cesium'
 import 'cesium/Build/Cesium/Widgets/widgets.css'
 import { useEffect } from 'react'
@@ -40,11 +42,11 @@ export default function Vehicle() {
       // Initialize the Cesium Viewer in the HTML element with the `cesiumContainer` ID.
       const viewer = new Viewer('cesiumContainer', {
         // // show terrain // currently disabled don't know the altitude for the ground to put the human avatar
-        // terrain: Terrain.fromWorldTerrain({
-        //   // for day-night effect
-        //   requestWaterMask: true, // required for water effects
-        //   requestVertexNormals: true, // required for terrain lighting
-        // }),
+        terrain: Terrain.fromWorldTerrain({
+          // for day-night effect
+          requestWaterMask: true, // required for water effects
+          requestVertexNormals: true, // required for terrain lighting
+        }),
 
         clockViewModel: new ClockViewModel(clock), // Shows the clock
         infoBox: false,
@@ -64,7 +66,7 @@ export default function Vehicle() {
 
       viewer.entities.removeAll()
 
-      const position = Cartesian3.fromDegrees(85.28472, 27.688835, 0)
+      const position = Cartesian3.fromDegrees(85.28472, 27.688835, 1255.5)
       const heading = (210 * Math.PI) / 180
       const pitch = 0
       const roll = 0
@@ -87,12 +89,12 @@ export default function Vehicle() {
       viewer.trackedEntity = entity
 
       // // // Add Cesium OSM Buildings, a global 3D buildings layer.
-      // const osmBuildingsTileset = await createOsmBuildingsAsync()
-      // viewer.scene.primitives.add(osmBuildingsTileset)
+      const osmBuildingsTileset = await createOsmBuildingsAsync()
+      viewer.scene.primitives.add(osmBuildingsTileset)
 
-      // Fly the camera to Portland at the given longitude, latitude, and height.
+      // Fly the camera
       // viewer.camera.flyTo({
-      //   destination: Cartesian3.fromDegrees(-122.6515, 45.5252, 525),
+      //   destination: Cartesian3.fromDegrees(85.28472, 27.688835, 1300),
       //   orientation: {
       //     heading: Math.toRadians(0.0),
       //     pitch: Math.toRadians(-15.0),

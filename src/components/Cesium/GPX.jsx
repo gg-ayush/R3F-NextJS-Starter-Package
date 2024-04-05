@@ -16,12 +16,16 @@ import {
   GpxDataSource,
   PinBuilder,
   Color,
+  VerticalOrigin,
 } from 'cesium'
 import 'cesium/Build/Cesium/Widgets/widgets.css'
 import { useEffect } from 'react'
 import './css/main.css'
 
 export default function GPX() {
+  let gpxEntity
+  let pinEntity
+
   useEffect(() => {
     const initializeCesiumViewer = async () => {
       // CesiumJS has a default access token built in but it's not meant for active use.
@@ -69,27 +73,30 @@ export default function GPX() {
 
       const pinBuilder = new PinBuilder()
 
-      viewer.dataSources.add(
-        GpxDataSource.load('Afternoon_Mar_30th_.gpx', {
-          clampToGround: true,
-          trackColor: Color.GREENYELLOW,
+      // Load the GPX data source
+      const gpxDataSource = await GpxDataSource.load('Afternoon_Mar_30th_.gpx', {
+        clampToGround: true,
+        trackColor: Color.GREENYELLOW,
+        waypointImage: pinBuilder.fromUrl('/icons/icons8-location-96.png', Color.YELLOW, 96),
+      })
 
-          // Custom waypoint image
-          waypointImage: pinBuilder.fromUrl(
-            'https://imgs.search.brave.com/gQWYzwf_Qnt-Xf0GFD7hKey-F6mXq4jTdtBPhd5u8ew/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9mcmVl/cG5naW1nLmNvbS9z/dGF0aWMvaW1nL3lv/dXR1YmUucG5n',
-            Color.TRANSPARENT,
-            60,
-          ),
-        }),
-      )
+      // Add the GPX data source to the viewer
+      viewer.dataSources.add(gpxDataSource)
 
-      viewer.camera.flyTo({
-        destination: Cartesian3.fromDegrees(85.240347, 27.683235, 1414),
-        orientation: {
-          heading: Math.toRadians(0.0),
-          pitch: Math.toRadians(-35.0),
+      // Get the first entity from the data source
+      gpxEntity = gpxDataSource.entities.values[0]
+
+      // Create an entity for the pinBuilder
+      pinEntity = viewer.entities.add({
+        position: gpxEntity.position,
+        billboard: {
+          image: new Color(0.0, 0.0, 0.0, 0.0), // Transparent color
+          verticalOrigin: VerticalOrigin.BASELINE,
         },
       })
+
+      // Set the tracked entity to the GPX data entity
+      viewer.trackedEntity = pinEntity
     }
 
     initializeCesiumViewer()
@@ -104,6 +111,7 @@ export default function GPX() {
       <div className='absolute size-96'>
         <p>Loading ...</p>
       </div>
+
       <div id='cesiumContainer' className='h-screen w-full'>
         {/* Cesium Viewer container */}
       </div>
