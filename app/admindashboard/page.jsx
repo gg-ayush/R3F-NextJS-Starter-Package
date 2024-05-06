@@ -10,7 +10,7 @@ import SkillsRadarComponent from '@/components/charts/SkillsRadarChart'
 
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
-import { SiFramer, SiTailwindcss, SiReact, SiJavascript, SiCss3 } from 'react-icons/si'
+import { SiFramer, SiTailwindcss, SiReact, SiJavascript, SiCss3, SiHtml5 } from 'react-icons/si'
 import { DndContext } from '@dnd-kit/core'
 
 const AdminDashboard = () => {
@@ -108,6 +108,9 @@ const SideNav = () => {
       </NavItem>
       <NavItem selected={selected === 4} id={4} setSelected={setSelected}>
         <SiCss3 />
+      </NavItem>
+      <NavItem selected={selected == 5} id={5} setSelected={setSelected}>
+        <SiHtml5 />
       </NavItem>
     </nav>
   )
