@@ -8,7 +8,8 @@ import { Pagination, Scrollbar } from 'swiper/modules'
 import Link from 'next/link'
 import Image from 'next/image'
 
-import { useUser } from '@/context/UserContext/UserContext'
+// import { useUser } from '@/context/UserContext/UserContext'
+import { useUser } from '@/UserClientProvider' //----------------> module not found error in my branch
 
 export default function ShowGuildDiscover({
   users,
