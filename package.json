@@ -2,7 +2,9 @@
   "name": "react-three-next",
   "version": "2.0.0",
   "authors": [
-    "Renaud ROHLINGER <https://twitter.com/onirenaud>"
+    "Ayush Tamang",
+    "Rohit Shrestha",
+    "Satkar Niroula"
   ],
   "license": "MIT",
   "private": true,
